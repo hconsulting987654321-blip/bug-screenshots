@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>AgentActivityFeed - action-entry__code hardcoded font-family</title>
+<style>
+  :root {
+    --cortex-bg-primary: #1e1e1e;
+    --cortex-bg-hover: #2d2d30;
+    --cortex-text-primary: #cccccc;
+    --cortex-info: #75beff;
+    --cortex-error: #f48771;
+    --cortex-success: #89d185;
+    --cortex-radius-md: 6px;
+    --cortex-radius-sm: 4px;
+    --surface-base: #1e1e1e;
+    --surface-raised: #2d2d30;
+    --surface-hover: rgba(255,255,255,0.08);
+    --border-weak: rgba(255,255,255,0.1);
+    --text-base: #cccccc;
+    --text-weak: rgba(255,255,255,0.6);
+    --text-weaker: rgba(255,255,255,0.4);
+    --accent: #75beff;
+    --scrollbar-thumb: rgba(255,255,255,0.15);
+    --vscode-textLink-foreground: #3794ff;
+    --vscode-notificationsWarningIcon-foreground: #cca700;
+    --vscode-chat-linesAddedForeground: #89d185;
+    --vscode-errorForeground: #f48771;
+    --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #1e1e1e; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+
+  /* Exact styles from AgentActivityFeed.css */
+  .activity-feed {
+    display: flex; flex-direction: column; height: 420px; min-height: 200px;
+    background: var(--surface-base); border: 1px solid var(--border-weak);
+    border-radius: var(--cortex-radius-md); overflow: hidden;
+    font-size: 13px; color: var(--text-base); width: 480px; margin: 32px auto;
+  }
+  .activity-feed__header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 12px; background: var(--surface-raised);
+    border-bottom: 1px solid var(--border-weak); flex-shrink: 0;
+  }
+  .activity-feed__title {
+    display: flex; align-items: center; gap: 8px;
+    font-weight: 600; font-size: 13px; color: var(--text-base);
+  }
+  .activity-feed__content { flex: 1; overflow-y: auto; padding: 4px 0; }
+  .activity-feed__footer {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 6px 12px; background: var(--surface-raised);
+    border-top: 1px solid var(--border-weak); flex-shrink: 0;
+  }
+  .activity-feed__count { font-size: 11px; color: var(--text-weaker); }
+  .activity-feed__autoscroll {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 11px; color: var(--text-weak); cursor: pointer;
+  }
+
+  /* Action entries */
+  .action-entry { padding: 6px 12px; margin: 2px 4px; border-radius: var(--cortex-radius-sm); }
+  .action-entry--expanded { background: var(--surface-hover); }
+  .action-entry__header {
+    display: flex; align-items: center; gap: 8px; min-height: 24px; cursor: pointer;
+  }
+  .action-entry__chevron { flex-shrink: 0; width: 14px; display: flex; align-items: center; justify-content: center; color: var(--text-weak); }
+  .action-entry__icon { flex-shrink: 0; display: flex; align-items: center; }
+  .action-entry__content { flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px; }
+  .action-entry__title { font-size: 12px; color: var(--text-base); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .action-entry__subtitle { font-size: 11px; color: var(--text-weaker); }
+  .action-entry__status { flex-shrink: 0; display: flex; align-items: center; width: 16px; height: 16px; }
+  .action-entry__timestamp { font-size: 10px; color: var(--text-weaker); flex-shrink: 0; }
+  .action-entry__diff-added { color: var(--vscode-chat-linesAddedForeground); font-size: 11px; }
+
+  /* BUG: action-entry__code uses hardcoded font-family instead of var(--font-mono) */
+  .action-entry__body {
+    margin-top: 8px; padding: 8px 12px; padding-left: 30px;
+    background: var(--surface-raised); border-radius: var(--cortex-radius-sm);
+  }
+  .action-entry__code {
+    margin: 0; padding: 0;
+    /* BUG LINE 535: hardcoded font stack instead of var(--font-mono) */
+    font-family: 'SF Mono', 'Consolas', 'Monaco', monospace;
+    font-size: 11px; line-height: 1.5;
+    color: var(--text-weak); white-space: pre-wrap; word-break: break-word;
+    max-height: 200px; overflow-y: auto;
+  }
+
+  /* Bug annotation label */
+  .bug-label {
+    position: absolute; top: -18px; left: 30px;
+    font-size: 10px; font-weight: 600; color: #f48771;
+    font-family: -apple-system, sans-serif;
+  }
+  .bug-highlight { position: relative; }
+
+  /* Icon placeholder */
+  .icon { display: inline-flex; align-items: center; justify-content: center; }
+  .icon svg { width: 14px; height: 14px; fill: currentColor; }
+</style>
+</head>
+<body>
+
+<div class="activity-feed">
+  <div class="activity-feed__header">
+    <div class="activity-feed__title">
+      <span style="color: var(--accent);">&#9673;</span>
+      <span>Activity</span>
+    </div>
+  </div>
+
+  <div class="activity-feed__content">
+    <!-- Collapsed entry -->
+    <div class="action-entry">
+      <div class="action-entry__header">
+        <span class="action-entry__chevron">&#9656;</span>
+        <span class="action-entry__icon" style="color: var(--vscode-textLink-foreground);">&#128065;</span>
+        <div class="action-entry__content">
+          <span class="action-entry__title">Reading config.ts</span>
+          <span class="action-entry__subtitle">42 lines</span>
+        </div>
+        <span class="action-entry__status" style="color: var(--vscode-chat-linesAddedForeground);">&#10003;</span>
+        <span class="action-entry__timestamp">14:32:05</span>
+      </div>
+    </div>
+
+    <!-- Collapsed entry -->
+    <div class="action-entry">
+      <div class="action-entry__header">
+        <span class="action-entry__chevron">&#9656;</span>
+        <span class="action-entry__icon" style="color: var(--vscode-notificationsWarningIcon-foreground);">&#9998;</span>
+        <div class="action-entry__content">
+          <span class="action-entry__title">Editing utils.ts</span>
+          <span class="action-entry__subtitle"><span class="action-entry__diff-added">+12</span></span>
+        </div>
+        <span class="action-entry__status" style="color: var(--vscode-chat-linesAddedForeground);">&#10003;</span>
+        <span class="action-entry__timestamp">14:32:08</span>
+      </div>
+    </div>
+
+    <!-- EXPANDED entry showing the BUG — action-entry__code with hardcoded font -->
+    <div class="action-entry action-entry--expanded">
+      <div class="action-entry__header">
+        <span class="action-entry__chevron">&#9662;</span>
+        <span class="action-entry__icon" style="color: var(--accent);">&#9881;</span>
+        <div class="action-entry__content">
+          <span class="action-entry__title">Terminal Output</span>
+        </div>
+        <span class="action-entry__status" style="color: var(--vscode-chat-linesAddedForeground);">&#10003;</span>
+        <span class="action-entry__timestamp">14:32:12</span>
+      </div>
+      <div class="action-entry__body bug-highlight">
+        <pre class="action-entry__code">$ npm run build
+
+> cortex-ide@0.1.0 build
+> vite build
+
+vite v5.4.0 building for production...
+✓ 1248 modules transformed.
+dist/index.html         0.46 kB │ gzip:  0.30 kB
+dist/assets/index.css  48.12 kB │ gzip: 10.24 kB
+dist/assets/index.js  842.30 kB │ gzip: 245.18 kB
+✓ built in 4.82s</pre>
+      </div>
+    </div>
+
+    <!-- Another collapsed entry -->
+    <div class="action-entry">
+      <div class="action-entry__header">
+        <span class="action-entry__chevron">&#9656;</span>
+        <span class="action-entry__icon" style="color: var(--accent);">&#9881;</span>
+        <div class="action-entry__content">
+          <span class="action-entry__title">Running eslint</span>
+          <span class="action-entry__subtitle">3 args</span>
+        </div>
+        <span class="action-entry__status" style="color: var(--accent);">
+          <svg width="12" height="12" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="20 10" /></svg>
+        </span>
+        <span class="action-entry__timestamp">14:32:15</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="activity-feed__footer">
+    <label class="activity-feed__autoscroll">
+      <input type="checkbox" checked style="accent-color: var(--accent); width: 14px; height: 14px;" />
+      <span>Auto-scroll</span>
+    </label>
+    <span class="activity-feed__count">4 actions</span>
+  </div>
+</div>
+
+</body>
+</html>
