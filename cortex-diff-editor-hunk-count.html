@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #1E1F22; color: #E0E0E0; font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; }
+  .panel { width: 700px; height: 520px; display: flex; flex-direction: column; background: #1E1F22; }
+
+  .toolbar {
+    display: flex; align-items: center; justify-content: space-between;
+    height: 36px; padding: 0 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    flex-shrink: 0; font-size: 13px; gap: 8px;
+  }
+  .nav-group { display: flex; align-items: center; gap: 4px; }
+  .actions-group { display: flex; align-items: center; gap: 6px; }
+  .file-path { color: #E0E0E0; font-weight: 500; }
+  /* THE BUG: hardcoded rgba(255,255,255,0.5) fallback */
+  .hunk-count { font-size: 12px; color: rgba(255,255,255,0.5); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .btn { background: transparent; border: none; color: #A0A0A0; cursor: pointer; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-family: inherit; display: flex; align-items: center; gap: 4px; }
+  .btn-danger { color: #F87171; }
+  .additions { font-size: 12px; color: #4ADE80; }
+  .deletions { font-size: 12px; color: #F87171; }
+  .stats { display: flex; align-items: center; gap: 8px; margin-left: 8px; }
+  .editor-area { flex: 1; position: relative; overflow: hidden; background: #1E1F22; }
+  .diff-line { padding: 0 12px 0 60px; height: 22px; line-height: 22px; font-family: 'Cascadia Code', 'Fira Code', monospace; font-size: 13px; white-space: pre; position: relative; }
+  .diff-line .ln { position: absolute; left: 0; width: 50px; text-align: right; padding-right: 8px; color: rgba(255,255,255,0.3); font-size: 12px; }
+  .diff-add { background: rgba(74, 222, 128, 0.1); }
+  .diff-del { background: rgba(248, 113, 113, 0.1); }
+
+  /* Light theme simulation */
+  .light-panel { width: 700px; height: 240px; display: flex; flex-direction: column; background: #F5F5F5; color: #1E1E1E; border-top: 2px dashed #FF6B6B; }
+  .light-panel .toolbar { background: #F5F5F5; border-bottom: 1px solid #ddd; }
+  .light-panel .file-path { color: #1E1E1E; }
+  /* On light theme, rgba(255,255,255,0.5) = white text on white bg = invisible */
+  .light-panel .hunk-count { color: rgba(255,255,255,0.5); }
+  .light-panel .btn { color: #666; }
+  .light-panel .editor-area { background: #F5F5F5; }
+  .light-panel .diff-line { color: #1E1E1E; }
+  .light-panel .diff-line .ln { color: #999; }
+
+  .bug-arrow {
+    position: absolute; color: #FF6B6B; font-size: 11px; font-weight: 700;
+    font-family: 'Segoe UI', sans-serif; white-space: nowrap; pointer-events: none;
+  }
+  .bug-box {
+    border: 2px solid #FF6B6B; border-radius: 3px; pointer-events: none; display: inline;
+  }
+  .label { color: #FF6B6B; font-size: 12px; font-weight: 700; padding: 4px 12px; }
+</style>
+</head>
+<body>
+<div class="panel">
+  <div style="padding: 4px 12px; color: #888; font-size: 11px;">Dark theme (hunk count visible with white-on-dark):</div>
+  <div class="toolbar">
+    <div class="nav-group">
+      <span class="file-path">utils/config.ts</span>
+      <span class="hunk-count" style="border: 2px solid #FF6B6B; border-radius: 3px; padding: 0 4px;">2/5</span>
+      <button class="btn">&#9650;</button>
+      <button class="btn">&#9660;</button>
+      <div class="stats"><span class="additions">+12</span><span class="deletions">-4</span></div>
+    </div>
+    <div class="actions-group">
+      <button class="btn">+ Stage All</button>
+      <button class="btn btn-danger">&#8634; Revert All</button>
+    </div>
+  </div>
+  <div style="padding: 2px 12px; color: #FF6B6B; font-size: 11px; font-weight: 700;">&#8593; hunkCountStyle color: rgba(255,255,255,0.5) &#8212; hardcoded white-based fallback</div>
+  <div class="editor-area" style="height: 140px;">
+    <div class="diff-line"><span class="ln">14</span>import { Logger } from './logger';</div>
+    <div class="diff-line"><span class="ln">15</span>import { Config } from './types';</div>
+    <div class="diff-line"><span class="ln">16</span></div>
+    <div class="diff-line diff-del"><span class="ln">17</span><span style="color:#F87171;">- const DEFAULT_TIMEOUT = 5000;</span></div>
+    <div class="diff-line diff-add"><span class="ln">17</span><span style="color:#4ADE80;">+ const DEFAULT_TIMEOUT = 10000;</span></div>
+    <div class="diff-line"><span class="ln">18</span></div>
+    <div class="diff-line"><span class="ln">19</span>export function createConfig(opts) {</div>
+  </div>
+</div>
+<div class="light-panel">
+  <div class="label">&#9660; Light theme: hunk counter "2/5" becomes INVISIBLE (white on white)</div>
+  <div class="toolbar">
+    <div class="nav-group">
+      <span class="file-path">utils/config.ts</span>
+      <span class="hunk-count" style="border: 2px solid #FF6B6B; border-radius: 3px; padding: 0 4px;">2/5</span>
+      <button class="btn">&#9650;</button>
+      <button class="btn">&#9660;</button>
+      <div class="stats"><span class="additions">+12</span><span class="deletions">-4</span></div>
+    </div>
+    <div class="actions-group">
+      <button class="btn">+ Stage All</button>
+      <button class="btn btn-danger">&#8634; Revert All</button>
+    </div>
+  </div>
+  <div style="padding: 2px 12px; color: #FF6B6B; font-size: 11px; font-weight: 700;">&#8593; rgba(255,255,255,0.5) = invisible on #F5F5F5 background</div>
+  <div class="editor-area" style="height: 100px;">
+    <div class="diff-line"><span class="ln">14</span>import { Logger } from './logger';</div>
+    <div class="diff-line"><span class="ln">15</span>import { Config } from './types';</div>
+    <div class="diff-line"><span class="ln">16</span></div>
+  </div>
+</div>
+</body>
+</html>

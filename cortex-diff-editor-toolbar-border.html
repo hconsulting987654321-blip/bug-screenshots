@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #1E1F22; color: #E0E0E0; font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; }
+  .panel { width: 700px; height: 520px; display: flex; flex-direction: column; }
+
+  .dark-section { background: #1E1F22; flex: 1; display: flex; flex-direction: column; }
+  .light-section { background: #F5F5F5; flex: 1; display: flex; flex-direction: column; border-top: 2px dashed #FF6B6B; }
+
+  .toolbar {
+    display: flex; align-items: center; justify-content: space-between;
+    height: 36px; padding: 0 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    flex-shrink: 0; font-size: 13px; gap: 8px;
+  }
+  .nav-group { display: flex; align-items: center; gap: 4px; }
+  .actions-group { display: flex; align-items: center; gap: 6px; }
+  .file-path { font-weight: 500; }
+  .hunk-count { font-size: 12px; color: #888; font-variant-numeric: tabular-nums; }
+  .btn { background: transparent; border: none; color: #A0A0A0; cursor: pointer; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-family: inherit; }
+  .btn-danger { color: #F87171; }
+  .additions { font-size: 12px; color: #4ADE80; }
+  .deletions { font-size: 12px; color: #F87171; }
+  .stats { display: flex; align-items: center; gap: 8px; margin-left: 8px; }
+  .editor-area { flex: 1; overflow: hidden; }
+  .diff-line { padding: 0 12px 0 60px; height: 22px; line-height: 22px; font-family: monospace; font-size: 13px; white-space: pre; position: relative; }
+  .diff-line .ln { position: absolute; left: 0; width: 50px; text-align: right; padding-right: 8px; color: rgba(255,255,255,0.3); font-size: 12px; }
+
+  .dark-section .file-path { color: #E0E0E0; }
+  .light-section .file-path { color: #1E1E1E; }
+  .light-section .toolbar { background: #F5F5F5; }
+  .light-section .diff-line { color: #1E1E1E; }
+  .light-section .diff-line .ln { color: #999; }
+  .light-section .btn { color: #555; }
+
+  .annotation { color: #FF6B6B; font-size: 11px; font-weight: 700; padding: 3px 12px; }
+  .section-label { font-size: 11px; padding: 6px 12px; font-weight: 600; }
+  .dark-section .section-label { color: #888; }
+  .light-section .section-label { color: #FF6B6B; }
+  .border-highlight { border-bottom: 3px solid #FF6B6B !important; }
+</style>
+</head>
+<body>
+<div class="panel">
+  <div class="dark-section">
+    <div class="section-label">CortexDiffEditor toolbar &#8212; Dark theme:</div>
+    <div class="toolbar border-highlight">
+      <div class="nav-group">
+        <span class="file-path">utils/config.ts</span>
+        <span class="hunk-count">2/5</span>
+        <button class="btn">&#9650;</button>
+        <button class="btn">&#9660;</button>
+        <div class="stats"><span class="additions">+8</span><span class="deletions">-3</span></div>
+      </div>
+      <div class="actions-group">
+        <button class="btn">+ Stage All</button>
+        <button class="btn btn-danger">&#8634; Revert All</button>
+      </div>
+    </div>
+    <div class="annotation">&#8593; border-bottom: 1px solid rgba(255,255,255,0.08) &#8212; hardcoded white-based fallback for var(--cortex-bg-hover)</div>
+    <div class="editor-area">
+      <div class="diff-line"><span class="ln">10</span>import { resolve } from 'path';</div>
+      <div class="diff-line"><span class="ln">11</span></div>
+      <div class="diff-line" style="background:rgba(248,113,113,0.1);"><span class="ln">12</span><span style="color:#F87171;">- const base = './config';</span></div>
+      <div class="diff-line" style="background:rgba(74,222,128,0.1);"><span class="ln">12</span><span style="color:#4ADE80;">+ const base = resolve('./config');</span></div>
+      <div class="diff-line"><span class="ln">13</span>export default base;</div>
+    </div>
+  </div>
+  <div class="light-section">
+    <div class="section-label">Same toolbar on Light theme &#8212; border INVISIBLE:</div>
+    <div class="toolbar border-highlight">
+      <div class="nav-group">
+        <span class="file-path">utils/config.ts</span>
+        <span class="hunk-count">2/5</span>
+        <button class="btn">&#9650;</button>
+        <button class="btn">&#9660;</button>
+        <div class="stats"><span class="additions">+8</span><span class="deletions">-3</span></div>
+      </div>
+      <div class="actions-group">
+        <button class="btn">+ Stage All</button>
+        <button class="btn btn-danger">&#8634; Revert All</button>
+      </div>
+    </div>
+    <div class="annotation">&#8593; rgba(255,255,255,0.08) on #F5F5F5 = nearly invisible white-on-white border</div>
+    <div class="annotation">Should use: var(--cortex-border) or var(--cortex-bg-hover) without white fallback</div>
+    <div class="editor-area">
+      <div class="diff-line"><span class="ln">10</span>import { resolve } from 'path';</div>
+      <div class="diff-line"><span class="ln">11</span></div>
+      <div class="diff-line" style="background:rgba(248,113,113,0.08);"><span class="ln">12</span><span style="color:#D32F2F;">- const base = './config';</span></div>
+      <div class="diff-line" style="background:rgba(74,222,128,0.08);"><span class="ln">12</span><span style="color:#2E7D32;">+ const base = resolve('./config');</span></div>
+      <div class="diff-line"><span class="ln">13</span>export default base;</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
