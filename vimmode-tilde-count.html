@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #1e1e1e; color: #d4d4d4; font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; }
+
+.titlebar { background: #323233; height: 30px; display: flex; align-items: center; padding: 0 12px; border-bottom: 1px solid #1e1e1e; }
+.titlebar-text { color: #969696; font-size: 12px; flex: 1; text-align: center; }
+.traffic-lights { display: flex; gap: 8px; }
+.traffic-light { width: 12px; height: 12px; border-radius: 50%; }
+.tl-red { background: #ff5f57; }
+.tl-yellow { background: #febc2e; }
+.tl-green { background: #28c840; }
+
+.main { display: flex; height: calc(100vh - 30px - 22px); }
+
+.activity-bar { width: 48px; background: #252526; display: flex; flex-direction: column; align-items: center; padding-top: 8px; gap: 12px; border-right: 1px solid #1e1e1e; }
+.activity-icon { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; color: #858585; font-size: 18px; }
+.activity-icon.active { color: #fff; border-left: 2px solid #007acc; }
+
+.sidebar { width: 240px; background: #252526; border-right: 1px solid #1e1e1e; }
+.sidebar-header { padding: 10px 12px; font-size: 11px; color: #bbbbbb; text-transform: uppercase; letter-spacing: 0.5px; }
+.file-tree { padding: 0 0 0 12px; }
+.file-item { padding: 3px 8px; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+.file-item.active { background: #094771; }
+.file-icon { font-size: 12px; }
+.folder-icon { color: #dcb67a; }
+.ts-icon { color: #519aba; }
+.json-icon { color: #cbcb41; }
+.indent { padding-left: 20px; }
+
+.editor-area { flex: 1; display: flex; flex-direction: column; }
+
+.tabs { background: #252526; display: flex; height: 35px; border-bottom: 1px solid #1e1e1e; }
+.tab { padding: 0 12px; display: flex; align-items: center; gap: 6px; font-size: 13px; color: #969696; border-right: 1px solid #1e1e1e; }
+.tab.active { background: #1e1e1e; color: #fff; border-top: 1px solid #007acc; }
+.tab-icon { font-size: 11px; color: #519aba; }
+
+.editor { flex: 1; overflow: hidden; font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace; font-size: 14px; line-height: 20px; padding-top: 4px; }
+.line { display: flex; padding: 0; }
+.line-number { width: 50px; text-align: right; padding-right: 16px; color: #5a5a5a; user-select: none; flex-shrink: 0; }
+.line-number.active { color: #c6c6c6; }
+.line-content { white-space: pre; }
+
+.vim-cursor {
+  background: #a0a0a0;
+  color: #1e1e1e;
+}
+
+.kw { color: #c586c0; }
+.fn { color: #dcdcaa; }
+.str { color: #ce9178; }
+.num { color: #b5cea8; }
+.type { color: #4ec9b0; }
+.var { color: #9cdcfe; }
+.op { color: #d4d4d4; }
+.punc { color: #d4d4d4; }
+.comment { color: #6a9955; }
+
+.statusbar { height: 22px; background: #007acc; display: flex; align-items: center; font-size: 12px; color: #fff; }
+.statusbar-left { display: flex; align-items: center; gap: 12px; padding-left: 10px; flex: 1; }
+.statusbar-right { display: flex; align-items: center; gap: 14px; padding-right: 10px; }
+.vim-indicator { background: #16825d; padding: 0 8px; height: 22px; display: flex; align-items: center; font-weight: bold; font-size: 11px; }
+
+.minimap { width: 60px; background: #1e1e1e; border-left: 1px solid #2d2d2d; }
+</style>
+</head>
+<body>
+
+<div class="titlebar">
+  <div class="traffic-lights">
+    <div class="traffic-light tl-red"></div>
+    <div class="traffic-light tl-yellow"></div>
+    <div class="traffic-light tl-green"></div>
+  </div>
+  <div class="titlebar-text">utils.ts — cortex-project — Cortex IDE</div>
+</div>
+
+<div class="main">
+  <div class="activity-bar">
+    <div class="activity-icon active">&#128462;</div>
+    <div class="activity-icon">&#128269;</div>
+    <div class="activity-icon">&#9878;</div>
+    <div class="activity-icon">&#9654;</div>
+  </div>
+
+  <div class="sidebar">
+    <div class="sidebar-header">Explorer</div>
+    <div class="file-tree">
+      <div class="file-item"><span class="file-icon folder-icon">&#128193;</span> src</div>
+      <div class="file-item indent"><span class="file-icon folder-icon">&#128193;</span> components</div>
+      <div class="file-item indent active"><span class="file-icon ts-icon">TS</span> utils.ts</div>
+      <div class="file-item indent"><span class="file-icon ts-icon">TS</span> config.ts</div>
+      <div class="file-item"><span class="file-icon json-icon">{ }</span> package.json</div>
+    </div>
+  </div>
+
+  <div class="editor-area">
+    <div class="tabs">
+      <div class="tab active"><span class="tab-icon">TS</span> utils.ts</div>
+      <div class="tab"><span class="tab-icon">TS</span> config.ts</div>
+    </div>
+
+    <div class="editor">
+      <div class="line"><span class="line-number">1</span><span class="line-content"><span class="kw">import</span> { <span class="var">EventEmitter</span> } <span class="kw">from</span> <span class="str">"events"</span>;</span></div>
+      <div class="line"><span class="line-number">2</span><span class="line-content"></span></div>
+      <div class="line"><span class="line-number">3</span><span class="line-content"><span class="comment">// Format display name for user profile</span></span></div>
+      <div class="line"><span class="line-number">4</span><span class="line-content"><span class="kw">export function</span> <span class="fn">formatDisplayName</span>(<span class="var">firstName</span>: <span class="type">string</span>, <span class="var">lastName</span>: <span class="type">string</span>): <span class="type">string</span> {</span></div>
+      <div class="line"><span class="line-number">5</span><span class="line-content">  <span class="kw">const</span> <span class="var">fullName</span> = <span class="var">firstName</span> + <span class="str">" "</span> + <span class="var">lastName</span>;</span></div>
+      <div class="line"><span class="line-number active">6</span><span class="line-content">  <span class="kw">const</span> <span class="var">normalized</span> = <span class="var">F<span class="vim-cursor">u</span>llname</span>.<span class="fn">toLowerCase</span>();</span></div>
+      <div class="line"><span class="line-number">7</span><span class="line-content">  <span class="kw">return</span> <span class="var">normalized</span>.<span class="fn">charAt</span>(<span class="num">0</span>).<span class="fn">toUpperCase</span>() + <span class="var">normalized</span>.<span class="fn">slice</span>(<span class="num">1</span>);</span></div>
+      <div class="line"><span class="line-number">8</span><span class="line-content">}</span></div>
+      <div class="line"><span class="line-number">9</span><span class="line-content"></span></div>
+      <div class="line"><span class="line-number">10</span><span class="line-content"><span class="comment">// Parse configuration entries</span></span></div>
+      <div class="line"><span class="line-number">11</span><span class="line-content"><span class="kw">export function</span> <span class="fn">parseConfig</span>(<span class="var">raw</span>: <span class="type">string</span>[]): <span class="type">Record</span>&lt;<span class="type">string</span>, <span class="type">string</span>&gt; {</span></div>
+      <div class="line"><span class="line-number">12</span><span class="line-content">  <span class="kw">const</span> <span class="var">result</span>: <span class="type">Record</span>&lt;<span class="type">string</span>, <span class="type">string</span>&gt; = {};</span></div>
+      <div class="line"><span class="line-number">13</span><span class="line-content">  <span class="kw">for</span> (<span class="kw">const</span> <span class="var">line</span> <span class="kw">of</span> <span class="var">raw</span>) {</span></div>
+      <div class="line"><span class="line-number">14</span><span class="line-content">    <span class="kw">const</span> [<span class="var">key</span>, ...<span class="var">rest</span>] = <span class="var">line</span>.<span class="fn">split</span>(<span class="str">"="</span>);</span></div>
+      <div class="line"><span class="line-number">15</span><span class="line-content">    <span class="var">result</span>[<span class="var">key</span>.<span class="fn">trim</span>()] = <span class="var">rest</span>.<span class="fn">join</span>(<span class="str">"="</span>).<span class="fn">trim</span>();</span></div>
+      <div class="line"><span class="line-number">16</span><span class="line-content">  }</span></div>
+      <div class="line"><span class="line-number">17</span><span class="line-content">  <span class="kw">return</span> <span class="var">result</span>;</span></div>
+      <div class="line"><span class="line-number">18</span><span class="line-content">}</span></div>
+      <div class="line"><span class="line-number">19</span><span class="line-content"></span></div>
+      <div class="line"><span class="line-number">20</span><span class="line-content"><span class="kw">export const</span> <span class="var">MAX_RETRIES</span> = <span class="num">3</span>;</span></div>
+    </div>
+    <div class="minimap"></div>
+  </div>
+</div>
+
+<div class="statusbar">
+  <div class="statusbar-left">
+    <span class="vim-indicator">NORMAL</span>
+    <span>Ln 6, Col 23</span>
+  </div>
+  <div class="statusbar-right">
+    <span>UTF-8</span>
+    <span>TypeScript</span>
+    <span>Spaces: 2</span>
+  </div>
+</div>
+
+</body>
+</html>
